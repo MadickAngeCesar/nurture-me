@@ -10,7 +10,7 @@ docker -v
 ## 1. Scaffold Next.js (official generator)
 
 ```bash
-npx create-next-app@latest nurture-me \
+pnpx create-next-app@latest nurture-me \
   --typescript \
   --tailwind \
   --eslint \
@@ -29,14 +29,13 @@ This already gives you Tailwind, TypeScript, App Router, and Turbopack configure
 ## 2. shadcn/ui (official generator)
 
 ```bash
-npx shadcn@latest init
+pnpx shadcn@latest init
 ```
 
 Answer its prompts (style, base color, CSS variables). Then pull only the components you'll actually start with:
 
 ```bash
-npx shadcn@latest add button input card dialog form label select \
-  dropdown-menu avatar badge tabs sonner skeleton
+pnpx shadcn@latest add button input card dialog form label select dropdown-menu avatar badge tabs sonner skeleton
 ```
 
 You can `add` more anytime — no need to guess the full list up front.
@@ -44,16 +43,16 @@ You can `add` more anytime — no need to guess the full list up front.
 ## 3. State, data, and validation libraries (no generators — just install)
 
 ```bash
-npm install zustand @tanstack/react-query zod
-npm install -D @tanstack/eslint-plugin-query
+pnpm add zustand @tanstack/react-query zod
+pnpm add -D @tanstack/eslint-plugin-query
 ```
 
 ## 4. Database: Prisma (official generator)
 
 ```bash
-npm install prisma --save-dev
-npm install @prisma/client
-npx prisma init --datasource-provider postgresql
+pnpm add prisma --save-dev
+pnpm add @prisma/client
+pnpx prisma init
 ```
 
 This creates `prisma/schema.prisma` and `.env` for you — don't hand-write these.
@@ -61,20 +60,20 @@ This creates `prisma/schema.prisma` and `.env` for you — don't hand-write thes
 ## 5. Redis client (no generator)
 
 ```bash
-npm install ioredis
+pnpm add ioredis
 ```
 
 ## 6. Better Auth (official generator — do this *after* Prisma init, since it edits `schema.prisma`)
 
 ```bash
-npm install better-auth
-npx @better-auth/cli@latest init --framework nextjs
+pnpm add better-auth
+pnpx @better-auth/cli@latest init
 ```
 
-This scaffolds `src/lib/auth.ts` (or wherever it detects) with a starter config. Point its `database` at the Prisma adapter, then generate the auth tables directly into your existing schema:
+This scaffolds `lib/auth.ts` (or wherever it detects) with a starter config. Point its `database` at the Prisma adapter, then generate the auth tables directly into your existing schema:
 
 ```bash
-npx @better-auth/cli@latest generate
+pnpx @better-auth/cli@latest generate
 ```
 
 It will ask to modify `prisma/schema.prisma` in place — confirm with `y`. This is the CLI writing `User`, `Session`, `Account`, `Verification` models for you instead of you typing them.
@@ -82,7 +81,7 @@ It will ask to modify `prisma/schema.prisma` in place — confirm with `y`. This
 Then create the database and apply everything with Prisma's own generator (once Postgres is running — step 7):
 
 ```bash
-npx prisma migrate dev --name init
+pnpm prisma migrate dev --name init
 ```
 
 ## 7. Docker Compose for local Postgres + Redis
@@ -123,24 +122,24 @@ docker compose -f docker/docker-compose.yml up -d
 
 **Playwright** (has its own scaffolder — use it, don't hand-roll config):
 ```bash
-npm init playwright@latest
+pnpm create playwright
 ```
 Accept TypeScript, `tests/e2e` as the folder, and GitHub Actions workflow — it can even generate that CI file for you (say yes when asked).
 
 **Vitest** — no scaffolder, minimal install:
 ```bash
-npm install -D vitest @vitejs/plugin-react jsdom @vitest/ui
+pnpm add -D vitest @vitejs/plugin-react jsdom @vitest/ui
 ```
 
 **React Testing Library**:
 ```bash
-npm install -D @testing-library/react @testing-library/jest-dom @testing-library/user-event
+pnpm add -D @testing-library/react @testing-library/jest-dom @testing-library/user-event
 ```
 
 **MSW** (has a generator for the service worker file):
 ```bash
-npm install -D msw
-npx msw init public/ --save
+pnpm add -D msw
+pnpx msw init public/ --save
 ```
 
 ## 9. Wire up test config (small, unavoidable hand-edit)
@@ -173,20 +172,20 @@ mkdir -p .github/workflows
 ## 11. Documentation scaffold
 
 ```bash
-mkdir -p docs/architecture docs/api
+mkdir -p docs/architecture, docs/api
 ```
 
-Prisma and Better Auth both generate their own reference docs on demand (`npx prisma docs` isn't a thing, but `prisma studio` gives you a live schema browser: `npx prisma studio`). For everything else, one `docs/setup.md` capturing these exact commands is the highest-leverage doc you can write on day one.
+Prisma and Better Auth both generate their own reference docs on demand (`pnpx prisma docs` isn't a thing, but `prisma studio` gives you a live schema browser: `pnpx prisma studio`). For everything else, one `docs/setup.md` capturing these exact commands is the highest-leverage doc you can write on day one.
 
 ## 12. Sanity check
 
 ```bash
-npm run dev
-npx prisma studio        # verify User/Session tables exist
-npx playwright test      # should run (no tests yet, but proves install)
-npx vitest run           # same
+pnpm run dev
+pnpx prisma studio        # verify User/Session tables exist
+pnpx playwright test      # should run (no tests yet, but proves install)
+pnpx vitest run           # same
 ```
 
 ---
 
-That's the full init sequence — everything with an official generator used it (`create-next-app`, `shadcn`, `prisma init`, `@better-auth/cli`, `npm init playwright`, `msw init`); only the Docker Compose file, the CI YAML, and `vitest.config.ts` had to be hand-written because no tool generates those. Want me to generate the `docs/setup.md` capturing this sequence as an actual file you can commit?
+That's the full init sequence — everything with an official generator used it (`create-next-app`, `shadcn`, `prisma init`, `@better-auth/cli`, `pnpm init playwright`, `msw init`); only the Docker Compose file, the CI YAML, and `vitest.config.ts` had to be hand-written because no tool generates those. Want me to generate the `docs/setup.md` capturing this sequence as an actual file you can commit?
